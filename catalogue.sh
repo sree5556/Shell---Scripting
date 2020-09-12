@@ -89,6 +89,12 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
          Print "Extracting the unzip file"
          unzip -o mongodb.zip
          status_check
+         ############# above program was fine
+         mongo < catalogue.js
+         mongo < users.js
+         systemctl restart mongod
+         systemctl enable mongod
+         systemctl start mongod
          ;;
        *)
          echo "program invalid"

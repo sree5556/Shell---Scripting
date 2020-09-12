@@ -62,6 +62,11 @@ satus_check(){
             echo "completed the webserver"
 
             ;;
+       mongod)
+             Print "starting the mongod"
+
+
+            ;;
     catalogue)
             echo "installing the catalogue"
             echo "completed  the catalogue"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-user_id=$(id-u)
+user_id=$(id -u)
  case $user_id in
     0)
     echo "your the root user"

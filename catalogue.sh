@@ -75,6 +75,13 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
          status_check
          systemctl enable mongod
          systemctl start mongod
+         Print " *****configuration starts ******"
+         Print " bindIp: 127.0.0.1  # Enter 0.0.0.0 "
+         Print " <file_nmae : vim /etc/mongod.conf> "
+         sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+         Print "Bind ip- changed"
+         status_check
+         systemctl restart mongod
 
          ;;
        *)

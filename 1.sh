@@ -41,7 +41,7 @@ satus_check(){
 
 ######### main program ##
  case $1 in
-    forntend)
+    frontend)
       Print "Installing Nginx"
             echo "installing the webserver"
                       yum install nginx -y  # to perform this you have to be root user
@@ -64,7 +64,16 @@ satus_check(){
             ;;
        mongod)
              Print "starting the mongod"
-
+                   echo '[mongodb-org-4.2]
+                          name=MongoDB Repository
+                          baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
+                          gpgcheck=1
+                          enabled=1
+                          gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mongodb.repo
+             Print"Installing MongoDB"
+              yum install -y mongodb-org
+              satus_check
+                          #cd /etc/mongod.conf
 
             ;;
     catalogue)
@@ -77,6 +86,6 @@ satus_check(){
             ;;
     *)
             echo "invalid inputs please give the below listed servers"
-            echo " servers: $0 forntend|catalogue|cart"   # $0--> is the display the script name
+            echo " servers: $0 frontend|catalogue|cart|mongod"   # $0--> is the display the script name
             ;;
  esac

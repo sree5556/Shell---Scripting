@@ -67,6 +67,15 @@ gpgcheck=1
 enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mongodb.repo
          status_check
+         #### still above code is okay
+         ## now im going to next steps
+         Print "mongod starting"
+         Print "Downloading the mongod"
+         yum install -y mongodb-org
+         status_check
+         systemctl enable mongod
+         systemctl start mongod
+
          ;;
        *)
          echo "program invalid"

@@ -9,10 +9,11 @@ user_id=$(id -u)
     echo "u dont have permission"
     ;;
  esac
- status_check
+ status_check()
  {
    case $? in
     0)
+    echo "your allowed"
     echo "your allowed"
     ;;
     *)

@@ -25,21 +25,35 @@ user_id=$(id -u)
 	      echo  -e "\e[1;3;46m success \e["
 
  fi
-
- case $? in   # here its checks the exit status weather its zero | one
+Print(){
+  echo -e "\e[1;32;46m----------------------- $1  ---------\e[0m"
+}
+satus_check(){
+  case $? in   # here its checks the exit status weather its zero | one
    0)
-     echo "------sucess----"
+     echo "------success----"
    ;;
    *)
       echo"-----failure---"
     ;;
  esac
+}
+
 
  case $1 in
     forntend)
             echo "installing the webserver"
                       yum install nginx -y  # to perform this you have to be root user
+              satus_check
             echo "completed the webserver"
+            
+
+
+
+
+
+
+
             ;;
     catalogue)
             echo "installing the catalogue"

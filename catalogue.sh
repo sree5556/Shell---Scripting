@@ -20,5 +20,5 @@ user_id=$(id -u)
     ;;
    esac
  }
-
+status_check
 

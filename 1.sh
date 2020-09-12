@@ -18,13 +18,18 @@ user_id=$(id -u)
 #    else
 #	      echo "you are the root user"
 # fi
- if [ $? -ne 0 ]; then       # here its checks the exit status weather its zero | one
-	       echo -e "\e[1;31;43m failure \e["
-	       exit 1
-    else
-	      echo  -e "\e[1;3;46m success \e["
 
- fi
+
+
+# if [ $? -ne 0 ]; then       # here its checks the exit status weather its zero | one
+#	       echo -e "\e[1;31;43m failure \e["
+#	       exit 1
+#    else
+#	      echo  -e "\e[1;3;46m success \e["
+#
+# fi
+
+
 Print(){
   echo -e "\e[1;32;46m----------------------- $1  ---------\e[0m"
 }
@@ -73,7 +78,19 @@ satus_check(){
              Print"Installing MongoDB"
               yum install -y mongodb-org
               satus_check
-                          #cd /etc/mongod.conf
+              Print "Starting MongoDB Service"
+              systemctl enable mongod
+              systemctl start mongod
+
+              Print"Downloading the Schema"
+              curl -s -L -o /tmp/mongodb.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/e9218aed-a297-4945-9ddc-94156bd81427/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+              cd /tmp
+              unzip -o mongodb.zip #overright -o
+              satus_check
+              Print"load catalogue schema"
+              mongod < catalogue.js
+              Print"load users schema"
+              mongod < users.js
 
             ;;
     catalogue)

@@ -12,12 +12,12 @@ user_id=$(id -u)
         exit 1
         ;;
  esac
- if [ $ID -ne 0 ]; then
-	       echo -e "\e[1;31;43m You are not the root user, you don't have permissions to run this \e["
-	       exit 1
-    else
-	      echo "you are the root user"
- fi
+# if [ $ID -ne 0 ]; then
+#	       echo -e "\e[1;31;43m You are not the root user, you don't have permissions to run this \e["
+#	       exit 1
+#    else
+#	      echo "you are the root user"
+# fi
  if [ $? -ne 0 ]; then       # here its checks the exit status weather its zero | one
 	       echo -e "\e[1;31;43m failure \e["
 	       exit 1
@@ -39,20 +39,27 @@ satus_check(){
  esac
 }
 
-
+######### main program ##
  case $1 in
     forntend)
+      Print "Installing Nginx"
             echo "installing the webserver"
                       yum install nginx -y  # to perform this you have to be root user
               satus_check
+      Print "Curl schema"
+          curl -s -L -o /tmp/frontend.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/db389ddc-b576-4fd9-be14-b373d943d6ee/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+          satus_check
+          cd /usr/share/nginx/html
+          rm -rf *
+          unzip -o /tmp/frontend.zip # unzip -o --overwrite the download each time
+          mv static/* .
+          rm -rf static README.md
+          mv localhost.conf /etc/nginx/nginx.conf
+          systemctl restart nginx
+          systemctl enable nginx
+          systemctl start nginx
+
             echo "completed the webserver"
-            
-
-
-
-
-
-
 
             ;;
     catalogue)

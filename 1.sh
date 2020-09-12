@@ -86,6 +86,6 @@ satus_check(){
             ;;
     *)
             echo "invalid inputs please give the below listed servers"
-            echo " servers: $0 frontend|catalogue|cart|mongod"   # $0--> is the display the script name
+            echo " servers: $0 frontend|catalogue|cart|mongod "   # $0--> is the display the script name
             ;;
  esac

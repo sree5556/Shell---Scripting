@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+DNS_DOMAIN_NAME="helodevops.tech"
 user_id=$(id -u)
  case $user_id in
     0)
@@ -7,6 +9,7 @@ user_id=$(id -u)
     ;;
     *)
     echo "u dont have permission"
+    exit 2
     ;;
  esac
  status_check()
@@ -17,6 +20,7 @@ user_id=$(id -u)
     ;;
     *)
     echo "sorry your not allowed"
+    exit 3
     ;;
    esac
  }
@@ -26,6 +30,51 @@ user_id=$(id -u)
  }
 
 # above program tested working fine
+
+nodejs_setup()
+{
+  ## java installation and repeated 3 times so making function
+  Print "Installing Node JS"
+  yum install nodejs make gcc-c++ -y
+  status_check
+  Print "Downloading completed"
+  Print "*************User add**************"
+  id roboshop
+  case $? in
+      1)
+        Print "Add the Application user"
+        useradd roboshop
+        status_check
+      ;;
+  esac
+  Print "user switched from to roboshop "
+  Print "Download the schema"
+  curl -s -L -o /tmp/$1.zip "$2"
+  status_check
+  cd /home/roboshop
+  mkdir $1
+  cd $1
+  Print "Extracting the zip file"
+  unzip -o /tmp/$1.zip
+  status_check
+  chown roboshop:roboshop /home/roboshop -R
+  Print "Setup $1 Service"
+  mv /home/roboshop/$1/systemd.service /etc/systemd/system/$1.service
+
+  ### manually we will give ip add ,but here route53--dns server
+
+  sed -i -e "s/MONGO_ENDPOINT/mongodb.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+  sed -i -e "s/REDIS_ENDPOINT/redis.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+  sed -i -e "s/CATALOGUE_ENDPOINT/catalogue.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+  status_check
+  Print "Start $1 Service"
+  systemctl daemon-reload
+  systemctl enable $1
+  systemctl start $1
+  status_check
+  npm install
+}
+
 
 ##### "Main Pro-Gram Starts"
 
@@ -77,7 +126,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
          systemctl start mongod
          Print " *****configuration starts ******"
          Print " bindIp: 127.0.0.1  # Enter 0.0.0.0 "
-         Print " <file_nmae : vim /etc/mongod.conf> "
+         Print " <file_name: vim /etc/mongod.conf> "
          sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf
          Print "Bind ip- changed"
          status_check
@@ -96,12 +145,30 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
          systemctl enable mongod
          systemctl start mongod
          ;;
-       *)
-         echo "program invalid"
+       catalogue)
+         Print "starting of catalogue"
+         ## $1--- "catalogue" $2--- "url"
+         nodejs_setup "catalogue" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/558568c8-174a-4076-af6c-51bf129e93bb/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
 
          ;;
+       cart)
+           Print "starting of catalogue"
+           ## $1--- "cart" $2--- "url"
+           nodejs_setup "cart" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/ac4e5cc0-c297-4230-956c-ba8ebb00ce2d/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
 
+         ;;
+       users)
+           Print "starting of catalogue"
+           ## $1--- "users" $2--- "url"
+           nodejs_setup "users" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/e911c2cd-340f-4dc6-a688-5368e654397c/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+         ;;
+       *)
 
+         echo "Invalid Input, Following inputs are only accepted"
+         ##### $0 is other than the current shell script file ######
+         echo "Usage: $0 frontend|catalogue|cart|mongodb|user|redis|mysql|rabbitmq|shipping|payment"
+         exit 2
+         ;;
 
 esac
 

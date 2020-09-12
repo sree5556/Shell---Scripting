@@ -57,6 +57,9 @@ nodejs_setup()
   Print "Extracting the zip file"
   unzip -o /tmp/$1.zip
   status_check
+  #####
+  npm --unsafe-perm install
+  status_check
   chown roboshop:roboshop /home/roboshop -R
   Print "Setup $1 Service"
   mv /home/roboshop/$1/systemd.service /etc/systemd/system/$1.service
@@ -72,7 +75,7 @@ nodejs_setup()
   systemctl enable $1
   systemctl start $1
   status_check
-  npm install
+ # npm install
 }
 
 
@@ -100,6 +103,17 @@ case $1 in
           mv static/* .
           rm -rf static README.md
           mv localhost.conf /etc/nginx/nginx.conf
+
+
+
+          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+          export CART=cart.${DNS_DOMAIN_NAME}
+          export USER=user.${DNS_DOMAIN_NAME}
+          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
+          export PAYMENT=payment.${DNS_DOMAIN_NAME}
+
+          envsubst < template.conf > /etc/nginx/nginx.conf
+
          Print "*****Configuration completed******"
          systemctl restart nginx
          systemctl enable nginx
@@ -108,7 +122,7 @@ case $1 in
        mongod)
          status_check
          Print "  Starting of Mongod "
-         Print "settinng of repos"
+         Print "setting of repos"
          echo '[mongodb-org-4.2]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/

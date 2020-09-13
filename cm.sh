@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-DNS_DOMAIN_NAME="helodevops.tech"
+#DNS_DOMAIN_NAME="helodevops.tech"
 user_id=$(id -u)
  case $user_id in
     0)
@@ -26,57 +26,57 @@ user_id=$(id -u)
  }
  Print()
  {
-    echo "************* $1*******************"
+    echo "************************* $1*************************************"
  }
 
 # above program tested working fine
 
-nodejs_setup()
-{
-  ## java installation and repeated 3 times so making function
-  Print "Installing Node JS"
-  yum install nodejs make gcc-c++ -y
-  status_check
-  Print "Downloading completed"
-  Print "*************User add**************"
-  id roboshop
-  case $? in
-      1)
-        Print "Add the Application user"
-        useradd roboshop
-        status_check
-      ;;
-  esac
-  Print "user switched from to roboshop "
-  Print "Download the schema"
-  curl -s -L -o /tmp/$1.zip "$2"
-  status_check
-  cd /home/roboshop
-  mkdir $1
-  cd $1
-  Print "Extracting the zip file"
-  unzip -o /tmp/$1.zip
-  status_check
-  #####
-  npm --unsafe-perm install
-  status_check
-  chown roboshop:roboshop /home/roboshop -R
-  Print "Setup $1 Service"
-  mv /home/roboshop/$1/systemd.service /etc/systemd/system/$1.service
-
-  ### manually we will give ip add ,but here route53--dns server
-
-  sed -i -e "s/MONGO_ENDPOINT/mongodb.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
-  sed -i -e "s/REDIS_ENDPOINT/redis.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
-  sed -i -e "s/CATALOGUE_ENDPOINT/catalogue.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
-  status_check
-  Print "Start $1 Service"
-  systemctl daemon-reload
-  systemctl enable $1
-  systemctl start $1
-  status_check
- # npm install
-}
+#nodejs_setup()
+#{
+#  ## java installation and repeated 3 times so making function
+#  Print "Installing Node JS"
+#  yum install nodejs make gcc-c++ -y
+#  status_check
+#  Print "Downloading completed"
+#  Print "*************User add**************"
+#  id roboshop
+#  case $? in
+#      1)
+#        Print "Add the Application user"
+#        useradd roboshop
+#        status_check
+#      ;;
+#  esac
+#  Print "user switched from to roboshop "
+#  Print "Download the schema"
+#  curl -s -L -o /tmp/$1.zip "$2"
+#  status_check
+#  cd /home/roboshop
+#  mkdir $1
+#  cd $1
+#  Print "Extracting the zip file"
+#  unzip -o /tmp/$1.zip
+#  status_check
+#  #####
+#  npm --unsafe-perm install
+#  status_check
+#  chown roboshop:roboshop /home/roboshop -R
+#  Print "Setup $1 Service"
+#  mv /home/roboshop/$1/systemd.service /etc/systemd/system/$1.service
+#
+#  ### manually we will give ip add ,but here route53--dns server
+#
+#  sed -i -e "s/MONGO_ENDPOINT/mongodb.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+#  sed -i -e "s/REDIS_ENDPOINT/redis.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+#  sed -i -e "s/CATALOGUE_ENDPOINT/catalogue.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+#  status_check
+#  Print "Start $1 Service"
+#  systemctl daemon-reload
+#  systemctl enable $1
+#  systemctl start $1
+#  status_check
+# # npm install
+#}
 
 
 ##### "Main Pro-Gram Starts"
@@ -106,13 +106,13 @@ case $1 in
 
 
 
-          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
-          export CART=cart.${DNS_DOMAIN_NAME}
-          export USER=user.${DNS_DOMAIN_NAME}
-          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
-          export PAYMENT=payment.${DNS_DOMAIN_NAME}
-
-          envsubst < template.conf > /etc/nginx/nginx.conf
+#          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+#          export CART=cart.${DNS_DOMAIN_NAME}
+#          export USER=user.${DNS_DOMAIN_NAME}
+#          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
+#          export PAYMENT=payment.${DNS_DOMAIN_NAME}
+#
+#          envsubst < template.conf > /etc/nginx/nginx.conf
 
          Print "*****Configuration completed******"
          systemctl restart nginx
@@ -159,23 +159,23 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
          systemctl enable mongod
          systemctl start mongod
          ;;
-       catalogue)
-         Print "starting of catalogue"
-         ## $1--- "catalogue" $2--- "url"
-         nodejs_setup "catalogue" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/558568c8-174a-4076-af6c-51bf129e93bb/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
-
-         ;;
-       cart)
-           Print "starting of catalogue"
-           ## $1--- "cart" $2--- "url"
-           nodejs_setup "cart" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/ac4e5cc0-c297-4230-956c-ba8ebb00ce2d/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
-
-         ;;
-       user)
-           Print "starting of catalogue"
-           ## $1--- "user" $2--- "url"
-           nodejs_setup "users" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/e911c2cd-340f-4dc6-a688-5368e654397c/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
-         ;;
+#       catalogue)
+#         Print "starting of catalogue"
+#         ## $1--- "catalogue" $2--- "url"
+#         nodejs_setup "catalogue" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/558568c8-174a-4076-af6c-51bf129e93bb/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+#
+#         ;;
+#       cart)
+#           Print "starting of catalogue"
+#           ## $1--- "cart" $2--- "url"
+#           nodejs_setup "cart" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/ac4e5cc0-c297-4230-956c-ba8ebb00ce2d/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+#
+#         ;;
+#       user)
+#           Print "starting of catalogue"
+#           ## $1--- "user" $2--- "url"
+#           nodejs_setup "users" "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/e911c2cd-340f-4dc6-a688-5368e654397c/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+#         ;;
        *)
 
          echo "Invalid Input, Following inputs are only accepted"

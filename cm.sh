@@ -180,7 +180,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mong
 
          echo "Invalid Input, Following inputs are only accepted"
          ##### $0 is other than the current shell script file ######
-         echo "Usage: $0 frontend|catalogue|cart|mongodb|user|redis|mysql|rabbitmq|shipping|payment"
+         echo "Usage: $0 front|catalogue|cart|mongodb|user|redis|mysql|rabbitmq|shipping|payment"
          exit 2
          ;;
 

@@ -7,8 +7,9 @@ case $user_id in
        ;;
      *)
        echo "user is restricted"
+       exit 1
        ;;
-     exit 1
+
 esac
 
 status_check()
@@ -19,8 +20,9 @@ status_check()
               ;;
             *)
               echo "************your not authorized*************"
+              exit 2
               ;;
-            exit 2
+
       esac
 }
 
@@ -33,13 +35,13 @@ Print()
 Print "Installing the nodejs"
 yum install nodejs make gcc-c++ -y
 status_check
-exit 3
+
 
 #######So to run the User service we choose to run as a normal user and that user name
 Print " Adding the user named roboshop "
 useradd roboshop
 status_check
-exit 3
+
 
 ####### So let's switch to the roboshop user and run the following commands.
 Print "switching from root user to roboshop"
@@ -55,9 +57,10 @@ status_check
 Print "Downloading the npm"
 npm install
 status_check
-exit 3
+
 cd
 mv /home/roboshop/user/systemd.service /etc/systemd/system/user.service
 systemctl daemon-reload
 systemctl start user
 systemctl enable user
+status_check

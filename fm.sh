@@ -40,12 +40,18 @@ user_id=$(id -u)
 #  Print "Downloading completed"
 #  Print "*************User add**************"
 #  id roboshop
+#    if [ $? -ne 0]; then
+#             Print "Add the Application user"
+#             useradd roboshop
+#             status_check
+#    fi
+# id roboshop
 #  case $? in
 #      1)
 #        Print "Add the Application user"
 #        useradd roboshop
 #        status_check
-#      ;;
+ #      ;;
 #  esac
 #  Print "user switched from to roboshop "
 #  Print "Download the schema"
@@ -75,7 +81,6 @@ user_id=$(id -u)
 #  systemctl enable $1
 #  systemctl start $1
 #  status_check
-# # npm install
 #}
 
 
@@ -113,6 +118,7 @@ case $1 in
 #          export PAYMENT=payment.${DNS_DOMAIN_NAME}
 #
 #          envsubst < template.conf > /etc/nginx/nginx.conf
+           sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
 
          Print "*****Configuration completed******"
          systemctl restart nginx
@@ -128,7 +134,7 @@ name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' >/etc/yum.repos.d/mongodb.repo
+gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' > /etc/yum.repos.d/mongodb.repo
          status_check
          #### still above code is okay
          ## now im going to next steps

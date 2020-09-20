@@ -106,14 +106,14 @@ Print "Installing NGINX"
 #    for app in catalogue cart user shipping payment; do
 #      export
 #    done
-    export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+   # export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
     export CART=cart.${DNS_DOMAIN_NAME}
-    export USER=user.${DNS_DOMAIN_NAME}
+    # export USER=user.${DNS_DOMAIN_NAME}
     export SHIPPING=shipping.${DNS_DOMAIN_NAME}
     export PAYMENT=payment.${DNS_DOMAIN_NAME}
 
     if [ -e /etc/nginx/nginx.conf ]; then
-      sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
+      sed -i -e "s/CART/${CART}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
     fi
 
     Print "Starting Nginx"

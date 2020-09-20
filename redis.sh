@@ -18,6 +18,7 @@ status_check()
 #     echo "u don't have access"
 #    exit 2
 # fi
+USER_ID=$(id -u)
 case $USER_ID in
   0)
     echo "Starting Installation"

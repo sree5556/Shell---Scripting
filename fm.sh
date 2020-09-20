@@ -128,6 +128,7 @@ case $1 in
          systemctl restart nginx
          systemctl enable nginx
          systemctl start nginx
+         status_check
          ;;
        mongod)
          status_check

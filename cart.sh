@@ -69,11 +69,11 @@ Print()
 #         Environment=REDIS_HOST=REDIS_ENDPOINT
 #         Environment=CATALOGUE_HOST=CATALOGUE_ENDPOINT
          Print "Change the service files of cart to dns of catalogue and redis"
-         if [ -e /etc/systemd/system/cart.service ]; then
-           sed -i -e "s/REDIS_ENDPOINT/redis.helodevops.tech/" /etc/systemd/system/cart.service
-          # sed -i -e  "s/CATALOGUE_ENDPOINT/catalogue.helodevops.tech/" /etc/systemd/system/cart.service
-           status_check
-         fi
+#         if [ -e /etc/systemd/system/cart.service ]; then
+#           sed -i -e "s/REDIS_ENDPOINT/redis.helodevops.tech/" /etc/systemd/system/cart.service
+#          # sed -i -e  "s/CATALOGUE_ENDPOINT/catalogue.helodevops.tech/" /etc/systemd/system/cart.service
+#           status_check
+#         fi
 
          systemctl daemon-reload
          systemctl start cart

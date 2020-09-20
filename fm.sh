@@ -90,15 +90,15 @@ case $1 in
 frontend)
 Print "Installing NGINX"
     yum install nginx -y
-    Status_Check
+    status_check
     Print "Downloading Frontend App"
     curl -s -L -o /tmp/frontend.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/db389ddc-b576-4fd9-be14-b373d943d6ee/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
-    Status_Check
+    status_check
     cd /usr/share/nginx/html
     rm -rf *
     Print "Extracting Frontend Archive"
     unzip /tmp/frontend.zip
-    Status_Check
+    status_check
     mv static/* .
     rm -rf static README.md
     mv template.conf /etc/nginx/nginx.conf
@@ -119,7 +119,7 @@ Print "Installing NGINX"
     Print "Starting Nginx"
     systemctl enable nginx
     systemctl restart nginx
-    Status_Check
+    status_check
   ;;
 #       front)
 #         echo "starting of nginx"

@@ -87,49 +87,83 @@ user_id=$(id -u)
 ##### "Main Pro-Gram Starts"
 
 case $1 in
-       front)
-         echo "starting of nginx"
-         Print "installing the nginx"
-         yum install nginx -y
-         status_check
-         Print "loading of nginx"
-         systemctl enable nginx
-         systemctl start nginx
-         Print "loading the schema"
-         curl -s -L -o /tmp/frontend.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/db389ddc-b576-4fd9-be14-b373d943d6ee/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
-         status_check
-         Print "schema success"
-         Print "*****Configuration Start******"
-          cd /usr/share/nginx/html
-          rm -rf *
-          status_check
-          Print "Extracting the zip file"
-          unzip -o /tmp/frontend.zip
-          mv static/* .
-          rm -rf static README.md
-          mv localhost.conf /etc/nginx/nginx.conf
+frontend)
+Print "Installing NGINX"
+    yum install nginx -y
+    Status_Check
+    Print "Downloading Frontend App"
+    curl -s -L -o /tmp/frontend.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/db389ddc-b576-4fd9-be14-b373d943d6ee/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+    Status_Check
+    cd /usr/share/nginx/html
+    rm -rf *
+    Print "Extracting Frontend Archive"
+    unzip /tmp/frontend.zip
+    Status_Check
+    mv static/* .
+    rm -rf static README.md
+    mv template.conf /etc/nginx/nginx.conf
 
+#    for app in catalogue cart user shipping payment; do
+#      export
+#    done
+    export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+    export CART=cart.${DNS_DOMAIN_NAME}
+    export USER=user.${DNS_DOMAIN_NAME}
+    export SHIPPING=shipping.${DNS_DOMAIN_NAME}
+    export PAYMENT=payment.${DNS_DOMAIN_NAME}
 
+    if [ -e /etc/nginx/nginx.conf ]; then
+      sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
+    fi
 
-          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
-          export CART=cart.${DNS_DOMAIN_NAME}
-          export USER=user.${DNS_DOMAIN_NAME}
-          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
-          export PAYMENT=payment.${DNS_DOMAIN_NAME}
+    Print "Starting Nginx"
+    systemctl enable nginx
+    systemctl restart nginx
+    Status_Check
+  ;;
+#       front)
+#         echo "starting of nginx"
+#         Print "installing the nginx"
+#         yum install nginx -y
+#         status_check
+#         Print "loading of nginx"
+#         systemctl enable nginx
+#         systemctl start nginx
+#         Print "loading the schema"
+#         curl -s -L -o /tmp/frontend.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/db389ddc-b576-4fd9-be14-b373d943d6ee/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
+#         status_check
+#         Print "schema success"
+#         Print "*****Configuration Start******"
+#          cd /usr/share/nginx/html
+#          rm -rf *
+#          status_check
+#          Print "Extracting the zip file"
+#          unzip -o /tmp/frontend.zip
+#          mv static/* .
+#          rm -rf static README.md
+#          mv localhost.conf /etc/nginx/nginx.conf
 #
-# envsubst < template.conf > /etc/nginx/nginx.conf
-           Print "updating the service file"
-           if  [ -e /etc/nginx/nginx.conf ]; then
-           sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
-           status_check
-           fi
+#
+#
+#          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+#          export CART=cart.${DNS_DOMAIN_NAME}
+#          export USER=user.${DNS_DOMAIN_NAME}
+#          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
+#          export PAYMENT=payment.${DNS_DOMAIN_NAME}
+##
+## envsubst < template.conf > /etc/nginx/nginx.conf
+#           Print "updating the service file"
+#           if  [ -e /etc/nginx/nginx.conf ]; then
+#           sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
+#           status_check
+#           fi
+#
+#         Print "*****Configuration completed******"
+#         systemctl restart nginx
+#         systemctl enable nginx
+#         systemctl start nginx
+#         status_check
 
-         Print "*****Configuration completed******"
-         systemctl restart nginx
-         systemctl enable nginx
-         systemctl start nginx
-         status_check
-         ;;
        mongod)
          status_check
          Print "  Starting of Mongod "
@@ -197,7 +231,7 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' > /etc/yum.repos.d/mon
 
          echo "Invalid Input, Following inputs are only accepted"
          ##### $0 is other than the current shell script file ######
-         echo "Usage: $0 front|catalogue|cart|mongod|user|redis|mysql|rabbitmq|shipping|payment"
+         echo "Usage: $0 frontend|catalogue|cart|mongod|user|redis|mysql|rabbitmq|shipping|payment"
          exit 2
          ;;
 

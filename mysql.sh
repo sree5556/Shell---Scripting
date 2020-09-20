@@ -78,7 +78,9 @@ tar -xf mysql-5.7.28-1.el7.x86_64.rpm-bundle.tar
 status_check
 
 Print "Install MySQL"
+## by default mariadb will come with centos so removing this it will not through any error when we installing the mysqld
 yum remove mariadb-libs -y
+
 status_check
 yum install mysql-community-client-5.7.28-1.el7.x86_64.rpm \
   mysql-community-common-5.7.28-1.el7.x86_64.rpm \
@@ -106,6 +108,7 @@ Print "Now a default root password will be generated and given in the log file."
 
 echo 'show databases;' | mysql -uroot -ppassword
 if [ $? -ne 0 ]; then
+
   echo -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password@1';\nuninstall plugin validate_password;\nALTER USER 'root'@'localhost' IDENTIFIED BY 'password';" >/tmp/reset-password.sql
   ROOT_PASSWORD=$(grep 'A temporary password' /var/log/mysqld.log | awk '{print $NF}')
   Print "Reset MySQL Password"

@@ -54,11 +54,15 @@ mkdir user
 cd user
 unzip -o /tmp/user.zip
 status_check
-Print "Downloading the npm"
-npm install
+Print "Install NodeJS App dependencies"
+  npm --unsafe-perm install
+  status_check
+  chown roboshop:roboshop /home/roboshop -R
+#Print "Downloading the npm"
+#npm install
 status_check
 
-cd
+#cd
 mv /home/roboshop/user/systemd.service /etc/systemd/system/user.service
 systemctl daemon-reload
 systemctl start user

@@ -1,0 +1,14 @@
+- name: first program in ansible
+  hosts: all
+  vars:
+    Numbers: 10
+    Characters: abc
+    String: nivas
+    Boolean: True
+    Boolean1: False
+    Float: 0.0.0.0
+  tasks:
+    - name: Print the fisrtprogram on DataTypes
+      debug:
+        msg: Numbers = {{Number}}, Characters = {{Characters}}, Boolean = {{Boolean}}, Boolean1 = {{Boolean1}}, Float = {{Float}}
+

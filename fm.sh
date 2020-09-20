@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-#DNS_DOMAIN_NAME="helodevops.tech"
+DNS_DOMAIN_NAME="helodevops.tech"
 user_id=$(id -u)
  case $user_id in
     0)
@@ -71,10 +71,10 @@ user_id=$(id -u)
 #  mv /home/roboshop/$1/systemd.service /etc/systemd/system/$1.service
 #
 #  ### manually we will give ip add ,but here route53--dns server
-#
 #  sed -i -e "s/MONGO_ENDPOINT/mongodb.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
 #  sed -i -e "s/REDIS_ENDPOINT/redis.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
 #  sed -i -e "s/CATALOGUE_ENDPOINT/catalogue.${DNS_DOMAIN_NAME}/" /etc/systemd/system/$1.service
+#
 #  status_check
 #  Print "Start $1 Service"
 #  systemctl daemon-reload
@@ -111,14 +111,18 @@ case $1 in
 
 
 
-#          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
-#          export CART=cart.${DNS_DOMAIN_NAME}
-#          export USER=user.${DNS_DOMAIN_NAME}
-#          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
-#          export PAYMENT=payment.${DNS_DOMAIN_NAME}
+          export CATALOGUE=catalogue.${DNS_DOMAIN_NAME}
+          export CART=cart.${DNS_DOMAIN_NAME}
+          export USER=user.${DNS_DOMAIN_NAME}
+          export SHIPPING=shipping.${DNS_DOMAIN_NAME}
+          export PAYMENT=payment.${DNS_DOMAIN_NAME}
 #
-#          envsubst < template.conf > /etc/nginx/nginx.conf
+# envsubst < template.conf > /etc/nginx/nginx.conf
+           Print "updating the service file"
+           if  [-e /etc/nginx/nginx.conf]; then
            sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
+           status_check
+           fi
 
          Print "*****Configuration completed******"
          systemctl restart nginx
@@ -147,10 +151,11 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' > /etc/yum.repos.d/mon
          Print " *****configuration starts ******"
          Print " bindIp: 127.0.0.1  # Enter 0.0.0.0 "
          Print " <file_name: vim /etc/mongod.conf> "
-         sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+         sed -i "s/127.0.0.1/0.0.0.0/" /etc/mongod.conf
          Print "Bind ip- changed"
          status_check
          systemctl restart mongod
+         status_check
          Print"Downloading the schema"
          curl -s -L -o /tmp/mongodb.zip "https://dev.azure.com/DevOps-Batches/ce99914a-0f7d-4c46-9ccc-e4d025115ea9/_apis/git/repositories/e9218aed-a297-4945-9ddc-94156bd81427/items?path=%2F&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&resolveLfs=true&%24format=zip&api-version=5.0&download=true"
          status_check
@@ -159,11 +164,16 @@ gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc' > /etc/yum.repos.d/mon
          unzip -o mongodb.zip
          status_check
          ############# above program was fine
+         Print "loading the catalogue"
          mongo < catalogue.js
+         status_check
+         Print "loading the users"
          mongo < users.js
+         status_check
          systemctl restart mongod
          systemctl enable mongod
          systemctl start mongod
+         status_check
          ;;
 #       catalogue)
 #         Print "starting of catalogue"

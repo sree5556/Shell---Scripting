@@ -39,9 +39,12 @@ Print()
 
          #######So to run the User service we choose to run as a normal user and that user name
          Print " Adding the user named roboshop "
-         useradd roboshop
-         status_check
-
+         id roboshop
+         if [ $? -ne 0 ]; then
+           echo "user is not there so adding the user"
+          useradd roboshop
+          status_check
+         fi
 
          ####### So let's switch to the roboshop user and run the following commands.
          Print "switching from root user to roboshop"
@@ -56,13 +59,22 @@ Print()
          status_check
 
          Print "Downloading the npm"
-         npm install
+         npm --unsafe-perm install
+         status_check
+         chown roboshop:roboshop /home/roboshop -R
          status_check
 
-
-         cd
          mv /home/roboshop/cart/systemd.service /etc/systemd/system/cart.service
-         status_check
+#
+#         Environment=REDIS_HOST=REDIS_ENDPOINT
+#         Environment=CATALOGUE_HOST=CATALOGUE_ENDPOINT
+         Print "Change the service files of cart to dns of catalogue and redis"
+         if [ -e /etc/systemd/system/cart.service ]; then
+           sed -i -e "s/REDIS_ENDPOINT/redis.helodevops.tech/" /etc/systemd/system/cart.service
+           sed -i -e  "s/CATALOGUE_ENDPOINT/catalogue.helodevops.tech/" /etc/systemd/system/cart.service
+           status_check
+         fi
+
          systemctl daemon-reload
          systemctl start cart
          systemctl enable cart

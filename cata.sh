@@ -54,12 +54,17 @@ mkdir catalogue
 cd catalogue
 unzip -o /tmp/catalogue.zip
 status_check
-Print "Downloading the npm"
-npm install
+Print "Downloading the npm dependencies"
+npm --unsafe-perm install
+  status_check
+  chown roboshop:roboshop /home/roboshop -R
 status_check
 
-cd
 mv /home/roboshop/catalogue/systemd.service /etc/systemd/system/catalogue.service
+#Environment=MONGO_URL="mongodb://MONGO_ENDPOINT:27017/catalogue"
+Print "updating the end point"
+sed -i -e "s/MONGO_ENDPOINT/mongodb.helodevops.tech/" /etc/systemd/system/catalogue.service
+status_check
 systemctl daemon-reload
 systemctl start catalogue
 systemctl enable catalogue

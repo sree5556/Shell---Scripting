@@ -1,7 +1,7 @@
 #!/bin/bash
 
 USER_ID=$(id -u)
-DNS_DOMAIN_NAME="devopsb51.tk"
+DNS_DOMAIN_NAME="helodevops.tech"
 
 case $USER_ID in
   0)

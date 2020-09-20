@@ -11,14 +11,22 @@ status_check()
  fi
 }
 
- user_id=$(id -u)
- if [ $user_id -ne 0 ]; then
-   echo "u r root user"
-   else
-     echo "u don't have access"
-    exit 2
- fi
-
+# user_id=$(id -u)
+# if [ $user_id -ne 0 ]; then
+#   echo "u r root user"
+#   else
+#     echo "u don't have access"
+#    exit 2
+# fi
+case $USER_ID in
+  0)
+    echo "Starting Installation"
+  ;;
+  *)
+    echo -e "\e[1;31mYou should be a root user to perform this script\e[0m"
+    exit 1
+    ;;
+esac
 Print(){
   echo "********************$1********************"
 }

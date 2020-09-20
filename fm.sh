@@ -119,7 +119,7 @@ case $1 in
 #
 # envsubst < template.conf > /etc/nginx/nginx.conf
            Print "updating the service file"
-           if  [-e /etc/nginx/nginx.conf]; then
+           if  [ -e /etc/nginx/nginx.conf ]; then
            sed -i -e "s/CATALOGUE/${CATALOGUE}/" -e "s/CART/${CART}/" -e "s/USER/${USER}/" -e "s/SHIPPING/${SHIPPING}/" -e "s/PAYMENT/${PAYMENT}/" /etc/nginx/nginx.conf
            status_check
            fi
